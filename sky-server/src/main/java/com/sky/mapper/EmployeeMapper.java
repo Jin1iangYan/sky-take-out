@@ -34,4 +34,7 @@ public interface EmployeeMapper {
      * @return 影响的行数
      */
     int updateEmployee(Employee employee);
+
+    @Select("select * from employee where id = #{id}")
+    Employee getById(Long id);
 }

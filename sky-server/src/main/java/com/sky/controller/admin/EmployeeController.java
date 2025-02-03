@@ -15,6 +15,7 @@ import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -120,5 +121,27 @@ public class EmployeeController {
         } else {
             return Result.error(MessageConstant.UNKNOWN_ERROR);
         }
+    }
+
+    /**
+     * 根据id查询员工
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询员工")
+    public Result<Employee> getEmployeeById(@PathVariable Long id) {
+        val employee = employeeService.getEmployeeById(id);
+        if (employee == null) {
+            return Result.error(MessageConstant.ACCOUNT_NOT_FOUND);
+        }
+        return Result.success(employee);
+    }
+
+    @PutMapping()
+    @ApiOperation("更新员工")
+    public Result<?> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeService.updateEmployee(employeeDTO);
+        return Result.success();
     }
 }
