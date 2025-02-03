@@ -100,4 +100,25 @@ public class EmployeeController {
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }
+
+    /**
+     * 启用/禁用员工账号
+     * @param status  状态 1-启用 0-禁用
+     * @param id      员工ID
+     * @return        统一返回格式
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用/禁用员工账号")
+    public Result<?> updateEmployeeStatus(@PathVariable Integer status, Long id) {
+        log.info("修改员工ID: {} 的状态为: {}", id, status);
+
+        // 调用服务层修改员工状态
+        boolean updated = employeeService.updateStatus(id, status);
+
+        if (updated) {
+            return Result.success();
+        } else {
+            return Result.error(MessageConstant.UNKNOWN_ERROR);
+        }
+    }
 }

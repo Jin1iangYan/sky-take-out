@@ -2,7 +2,6 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
@@ -17,6 +16,7 @@ import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import lombok.val;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,5 +109,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> result = page.getResult();
 
         return new PageResult(total, result);
+    }
+
+    /**
+     * 更新员工状态
+     * @param id      员工ID
+     * @param status  状态 1-启用 0-禁用
+     * @return 是否更新成功
+     */
+    public boolean updateStatus(Long id, Integer status) {
+        val currentId = BaseContext.getCurrentId();
+        // 使用 Builder 模式构造 Employee 对象
+        Employee employee = Employee.builder()
+                .id(id)
+                .status(status)
+                .build();
+        // 调用 Mapper 方法传入 Employee 对象进行更新操作
+        employee.setUpdateUser(currentId);
+        employee.setUpdateTime(LocalDateTime.now());
+        return employeeMapper.updateEmployee(employee) > 0;
     }
 }

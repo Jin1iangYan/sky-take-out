@@ -27,4 +27,11 @@ public interface EmployeeMapper {
     void insert(Employee employee);
 
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    /**
+     * 更新员工状态
+     * @param employee 员工对象
+     * @return 影响的行数
+     */
+    int updateEmployee(Employee employee);
 }
