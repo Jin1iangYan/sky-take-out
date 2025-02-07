@@ -22,4 +22,10 @@ public interface ShoppingCartMapper {
     void updateShoppingCart(ShoppingCart shoppingCart);
 
     void insert(ShoppingCart shoppingCart);
+
+    /**
+     * 根据用户id删除购物车数据
+     * @param userId
+     */
+    void deleteByUserId(Long userId);
 }
