@@ -28,4 +28,6 @@ public interface ShoppingCartMapper {
      * @param userId
      */
     void deleteByUserId(Long userId);
+
+    void deleteById(Long id);
 }

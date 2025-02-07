@@ -17,8 +17,15 @@
         SET number = #{number}
         WHERE id = #{id}
     </update>
+
+
     <delete id="deleteByUserId">
         DELETE FROM shopping_cart WHERE user_id = #{userId}
+    </delete>
+
+
+    <delete id="deleteById">
+        DELETE FROM shopping_cart WHERE id = #{id}
     </delete>
 
     <!-- 根据传入条件查询购物车记录 -->
