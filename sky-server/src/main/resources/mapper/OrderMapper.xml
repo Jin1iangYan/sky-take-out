@@ -83,4 +83,15 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="pageQuery" resultType="com.sky.entity.Orders">
+        SELECT * FROM orders WHERE user_id = #{userId}
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </select>
+
+    <select id="getById" resultType="com.sky.entity.Orders">
+        SELECT * FROM orders WHERE id = #{id}
+    </select>
 </mapper>

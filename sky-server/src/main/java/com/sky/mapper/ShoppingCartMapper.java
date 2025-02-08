@@ -23,6 +23,8 @@ public interface ShoppingCartMapper {
 
     void insert(ShoppingCart shoppingCart);
 
+    void insertBatch(List<ShoppingCart> shoppingCarts);
+
     /**
      * 根据用户id删除购物车数据
      * @param userId

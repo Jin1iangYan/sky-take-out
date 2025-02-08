@@ -11,6 +11,15 @@
             (#{name}, #{userId}, #{dishId}, #{setmealId}, #{dishFlavor}, #{number}, #{amount}, #{image}, #{createTime})
     </insert>
 
+    <insert id="insertBatch">
+        INSERT INTO shopping_cart
+        (name, user_id, dish_id, setmeal_id, dish_flavor, number, amount, image, create_time)
+        VALUES
+            <foreach collection="shoppingCarts" item="sc" separator=",">
+                (#{sc.name}, #{sc.userId}, #{sc.dishId}, #{sc.setmealId}, #{sc.dishFlavor}, #{sc.number}, #{sc.amount}, #{sc.image}, #{sc.createTime})
+            </foreach>
+    </insert>
+
     <!-- 更新购物车记录的数量 -->
     <update id="updateShoppingCart" parameterType="com.sky.entity.ShoppingCart">
         UPDATE shopping_cart
