@@ -85,13 +85,22 @@
     </update>
 
     <select id="pageQuery" resultType="com.sky.entity.Orders">
-        SELECT * FROM orders WHERE user_id = #{userId}
-        <if test="status != null">
-            AND status = #{status}
-        </if>
+        SELECT * FROM orders
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
     </select>
 
     <select id="getById" resultType="com.sky.entity.Orders">
         SELECT * FROM orders WHERE id = #{id}
+    </select>
+
+    <select id="countStatus" resultType="java.lang.Integer">
+        select count(id) from orders where status = #{status}
     </select>
 </mapper>
