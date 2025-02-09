@@ -10,6 +10,7 @@ import com.sky.vo.UserReportVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ public class ReportServiceImpl implements ReportService {
      * @param valueExtractor 提取值的函数
      * @return 包含日期和对应值的VO对象
      */
+    @SuppressWarnings("unchecked")
     private <T, V> String generateDateListAndValueList(
             List<LocalDate> allDates,
             List<T> dataList,
@@ -58,6 +60,17 @@ public class ReportServiceImpl implements ReportService {
 
             // 获取该日期的对应数据，如果没有数据则为默认值
             V value = dataMap.get(date);
+
+            // 如果没有找到对应的值，则根据类型赋默认值
+            if (value == null) {
+                if (BigDecimal.class.isAssignableFrom(valueExtractor.apply(dataList.get(0)).getClass())) {
+                    value = (V) BigDecimal.ZERO; // 默认值为 BigDecimal.ZERO
+                } else if (Long.class.isAssignableFrom(valueExtractor.apply(dataList.get(0)).getClass())) {
+                    value = (V) Long.valueOf(0); // 默认值为 0L
+                } else if (Integer.class.isAssignableFrom(valueExtractor.apply(dataList.get(0)).getClass())) {
+                    value = (V) Integer.valueOf(0); // 默认值为 0
+                }
+            }
 
             // 值列表
             if (valueListStr.length() > 0) {

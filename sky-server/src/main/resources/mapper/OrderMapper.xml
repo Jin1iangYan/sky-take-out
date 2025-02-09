@@ -111,7 +111,7 @@
     <select id="selectTurnoverByDateRange" resultType="com.sky.dto.TurnoverReportDataDTO">
         SELECT
         DATE(order_time) AS orderDate,
-        COALESCE(SUM(amount), 0) AS amountSum
+        COALESCE(SUM(amount), 0.00) AS amountSum
         FROM orders
         WHERE
         order_time >= #{begin}
