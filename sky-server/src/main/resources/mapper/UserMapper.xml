@@ -12,7 +12,8 @@
         SELECT
         DATE(create_time) AS date,
         COALESCE(COUNT(DISTINCT CASE WHEN create_time >= #{begin} AND create_time &lt;= #{end} THEN id END), 0)AS newUserCount,
-        COALESCE(COUNT(DISTINCT id), 0) AS totalUserCount
+        (SELECT COALESCE(COUNT(DISTINCT id), 0) FROM user) AS totalUserCount
+
         FROM user
         WHERE create_time BETWEEN #{begin} AND #{end}
         GROUP BY DATE(create_time);
