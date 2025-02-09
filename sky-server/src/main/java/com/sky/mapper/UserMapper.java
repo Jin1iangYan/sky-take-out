@@ -1,8 +1,12 @@
 package com.sky.mapper;
 
+import com.sky.dto.UserReportDataDTO;
 import com.sky.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -23,4 +27,6 @@ public interface UserMapper {
      * @param user 用户对象
      */
     void insert(User user);
+
+    List<UserReportDataDTO> selectTurnoverByDateRange(LocalDateTime begin, LocalDateTime end);
 }

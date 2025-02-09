@@ -108,7 +108,7 @@
         SELECT * FROM orders WHERE status = #{status} AND order_time &lt; #{orderTime}
     </select>
 
-    <select id="selectTurnoverByDateRange" resultType="com.sky.dto.TurnoverDataDTO">
+    <select id="selectTurnoverByDateRange" resultType="com.sky.dto.TurnoverReportDataDTO">
         SELECT
         DATE(order_time) AS orderDate,
         COALESCE(SUM(amount), 0) AS amountSum

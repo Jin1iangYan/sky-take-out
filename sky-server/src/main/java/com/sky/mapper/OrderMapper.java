@@ -2,7 +2,7 @@ package com.sky.mapper;
 
 import com.github.pagehelper.Page;
 import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.TurnoverDataDTO;
+import com.sky.dto.TurnoverReportDataDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -35,5 +35,5 @@ public interface OrderMapper {
 
     List<Orders> getByStatusAndOrderTimeLT(Integer status, LocalDateTime orderTime);
 
-    List<TurnoverDataDTO> selectTurnoverByDateRange(LocalDateTime begin, LocalDateTime end);
+    List<TurnoverReportDataDTO> selectTurnoverByDateRange(LocalDateTime begin, LocalDateTime end);
 }

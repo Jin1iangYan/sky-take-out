@@ -7,4 +7,14 @@
         insert into user (openid, name, phone, sex, id_number, avatar, create_time)
         values (#{openid}, #{name}, #{phone}, #{sex}, #{idNumber}, #{avatar}, #{createTime})
     </insert>
+
+    <select id="selectTurnoverByDateRange" resultType="com.sky.dto.UserReportDataDTO">
+        SELECT
+        DATE(create_time) AS date,
+        COALESCE(COUNT(DISTINCT CASE WHEN create_time >= #{begin} AND create_time &lt;= #{end} THEN id END), 0)AS newUserCount,
+        COALESCE(COUNT(DISTINCT id), 0) AS totalUserCount
+        FROM user
+        WHERE create_time BETWEEN #{begin} AND #{end}
+        GROUP BY DATE(create_time);
+    </select>
 </mapper>
