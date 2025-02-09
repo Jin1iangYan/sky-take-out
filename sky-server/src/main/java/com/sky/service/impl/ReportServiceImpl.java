@@ -108,7 +108,7 @@ public class ReportServiceImpl implements ReportService {
         List<LocalDate> allDates = begin.datesUntil(end.plusDays(1)).collect(Collectors.toList());
 
         // 查询数据库获取用户统计数据
-        List<UserReportDataDTO> userDataList = userMapper.selectTurnoverByDateRange(
+        List<UserReportDataDTO> userDataList = userMapper.selectUserReportByDateRange(
                 begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
 
         // 生成日期和新增用户、总用户的逗号分隔字符串

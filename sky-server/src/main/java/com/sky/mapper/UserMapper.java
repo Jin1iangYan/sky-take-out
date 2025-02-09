@@ -28,5 +28,5 @@ public interface UserMapper {
      */
     void insert(User user);
 
-    List<UserReportDataDTO> selectTurnoverByDateRange(LocalDateTime begin, LocalDateTime end);
+    List<UserReportDataDTO> selectUserReportByDateRange(LocalDateTime begin, LocalDateTime end);
 }

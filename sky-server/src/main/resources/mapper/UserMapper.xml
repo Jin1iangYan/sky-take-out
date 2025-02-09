@@ -8,7 +8,7 @@
         values (#{openid}, #{name}, #{phone}, #{sex}, #{idNumber}, #{avatar}, #{createTime})
     </insert>
 
-    <select id="selectTurnoverByDateRange" resultType="com.sky.dto.UserReportDataDTO">
+    <select id="selectUserReportByDateRange" resultType="com.sky.dto.UserReportDataDTO">
         SELECT
         DATE(create_time) AS date,
         COALESCE(COUNT(DISTINCT CASE WHEN create_time >= #{begin} AND create_time &lt;= #{end} THEN id END), 0)AS newUserCount,
