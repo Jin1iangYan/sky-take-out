@@ -1,10 +1,12 @@
 package com.sky.service.impl;
 
+import com.sky.dto.OrderReportDataDTO;
 import com.sky.dto.TurnoverReportDataDTO;
 import com.sky.dto.UserReportDataDTO;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
+import com.sky.vo.OrderReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,6 +136,44 @@ public class ReportServiceImpl implements ReportService {
                 .dateList(result[0])
                 .newUserList(result[1])
                 .totalUserList(totalUserResult[1])
+                .build();
+    }
+
+    /**
+     * 订单统计
+     *
+     * @param begin 统计的开始时间
+     * @param end   统计的结束时间
+     * @return OrderReportVO
+     */
+    @Override
+    public OrderReportVO getOrderStatistics(LocalDate begin, LocalDate end) {
+        // 生成日期列表
+        List<LocalDate> allDates = begin.datesUntil(end.plusDays(1)).collect(Collectors.toList());
+
+        // 查询数据库获取用户统计数据
+        List<OrderReportDataDTO> orderReportDateList = orderMapper.selectOrderReportByDateRange(
+                begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
+
+        String[] orderCountResult = generateDateListAndValueList(allDates, orderReportDateList,
+                OrderReportDataDTO::getDate, OrderReportDataDTO::getOrderCount).split("\\|");
+        String[] validOrderCountResult = generateDateListAndValueList(allDates, orderReportDateList,
+                OrderReportDataDTO::getDate, OrderReportDataDTO::getValidOrderCount).split("\\|");
+
+        // 订单完成率
+        Double orderCompletionRate = orderReportDateList.get(0).getOrderCompletionRate();
+        // 订单总数
+        Integer orderTotalCount = orderReportDateList.get(0).getOrderTotalCount();
+        // 有效订单总数
+        Integer validOrderTotalCount = orderReportDateList.get(0).getValidOrderTotalCount();
+
+        return OrderReportVO.builder()
+                .dateList(orderCountResult[0])
+                .orderCompletionRate(orderCompletionRate)
+                .totalOrderCount(orderTotalCount)
+                .orderCountList(orderCountResult[1])
+                .validOrderCount(validOrderTotalCount)
+                .validOrderCountList(validOrderCountResult[1])
                 .build();
     }
 }

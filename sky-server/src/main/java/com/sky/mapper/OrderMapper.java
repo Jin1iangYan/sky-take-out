@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.OrderReportDataDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.TurnoverReportDataDTO;
 import com.sky.entity.Orders;
@@ -36,4 +37,6 @@ public interface OrderMapper {
     List<Orders> getByStatusAndOrderTimeLT(Integer status, LocalDateTime orderTime);
 
     List<TurnoverReportDataDTO> selectTurnoverByDateRange(LocalDateTime begin, LocalDateTime end);
+
+    List<OrderReportDataDTO> selectOrderReportByDateRange(LocalDateTime begin, LocalDateTime end);
 }
