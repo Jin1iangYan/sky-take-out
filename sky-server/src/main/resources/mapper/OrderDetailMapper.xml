@@ -49,4 +49,16 @@
     <select id="getByOrderId" resultType="com.sky.entity.OrderDetail">
         SELECT * FROM order_detail WHERE order_id = #{orderId}
     </select>
+
+    <select id="selectSalesTop10ReportByDateRange" resultType="com.sky.dto.SalesTop10ReportDataDTO">
+        SELECT
+            od.name,
+            SUM(od.number) AS saleNumber
+        FROM order_detail od
+            LEFT JOIN orders o ON od.order_id = o.id
+        WHERE o.order_time BETWEEN #{begin} AND #{end}
+        GROUP BY od.dish_id, od.name
+        ORDER BY saleNumber DESC
+        LIMIT 10
+    </select>
 </mapper>

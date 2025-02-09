@@ -1,12 +1,15 @@
 package com.sky.service.impl;
 
 import com.sky.dto.OrderReportDataDTO;
+import com.sky.dto.SalesTop10ReportDataDTO;
 import com.sky.dto.TurnoverReportDataDTO;
 import com.sky.dto.UserReportDataDTO;
+import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class ReportServiceImpl implements ReportService {
     private OrderMapper orderMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
 
     /**
      * 生成日期和对应数据的逗号分隔字符串
@@ -174,6 +179,44 @@ public class ReportServiceImpl implements ReportService {
                 .orderCountList(orderCountResult[1])
                 .validOrderCount(validOrderTotalCount)
                 .validOrderCountList(validOrderCountResult[1])
+                .build();
+    }
+
+    /**
+     * 统计销售top10
+     *
+     * @param begin 统计的开始时间
+     * @param end   统计的结束时间
+     * @return OrderReportVO
+     */
+    @Override
+    public SalesTop10ReportVO getSalesTop10(LocalDate begin, LocalDate end) {
+        // 生成日期列表
+        List<LocalDate> allDates = begin.datesUntil(end.plusDays(1)).collect(Collectors.toList());
+
+        // 查询数据库获取销售Top10数据
+        List<SalesTop10ReportDataDTO> salesTop10ReportDateList = orderDetailMapper.selectSalesTop10ReportByDateRange(
+                begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
+
+        // 创建两个字符串列表用于存储名字和销量
+        StringBuilder nameListStr = new StringBuilder();
+        StringBuilder numberListStr = new StringBuilder();
+
+        // 遍历销售Top10数据
+        for (SalesTop10ReportDataDTO data : salesTop10ReportDateList) {
+            if (nameListStr.length() > 0) {
+                nameListStr.append(",");
+                numberListStr.append(",");
+            }
+            // 拼接名字和销量
+            nameListStr.append(data.getName());
+            numberListStr.append(data.getSaleNumber());
+        }
+
+        // 返回构建的 VO 对象
+        return SalesTop10ReportVO.builder()
+                .nameList(nameListStr.toString())
+                .numberList(numberListStr.toString())
                 .build();
     }
 }

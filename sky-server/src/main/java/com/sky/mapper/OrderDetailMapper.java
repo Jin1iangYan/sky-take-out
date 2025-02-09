@@ -1,7 +1,10 @@
 package com.sky.mapper;
 
+import com.sky.dto.SalesTop10ReportDataDTO;
 import com.sky.entity.OrderDetail;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -24,4 +27,6 @@ public interface OrderDetailMapper {
      * @return 订单明细
      */
     List<OrderDetail> getByOrderId(Long orderId);
+
+    List<SalesTop10ReportDataDTO> selectSalesTop10ReportByDateRange(LocalDateTime begin, LocalDateTime end);
 }
