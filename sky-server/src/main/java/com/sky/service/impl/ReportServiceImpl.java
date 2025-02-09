@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +44,15 @@ public class ReportServiceImpl implements ReportService {
         List<TurnoverReportDataDTO> turnoverDataList = orderMapper.selectTurnoverByDateRange(
                 begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
 
+        // 将销售数据按日期存入 Map 中
+        Map<LocalDate, BigDecimal> turnoverMap = turnoverDataList.stream()
+                .collect(Collectors.toMap(
+                        TurnoverReportDataDTO::getOrderDate,
+                        TurnoverReportDataDTO::getAmountSum,
+                        (existing, replacement) -> existing) // 如果日期重复，保留已有值
+                );
+
+        // 使用 StringBuilder 拼接结果
         StringBuilder dateListStr = new StringBuilder();
         StringBuilder turnoverListStr = new StringBuilder();
 
@@ -53,13 +63,8 @@ public class ReportServiceImpl implements ReportService {
             }
             dateListStr.append(date);
 
-            // 获取该日期的对应营业额数据
-            BigDecimal turnover = turnoverDataList.stream()
-                    .filter(data -> data.getOrderDate().equals(date))
-                    .map(TurnoverReportDataDTO::getAmountSum)
-                    .findFirst()
-                    .orElse(BigDecimal.ZERO);
-
+            // 获取该日期的对应营业额数据，若无数据则使用默认值
+            BigDecimal turnover = turnoverMap.getOrDefault(date, BigDecimal.ZERO);
             turnoverListStr.append(turnover);
         }
 
@@ -82,6 +87,14 @@ public class ReportServiceImpl implements ReportService {
         List<UserReportDataDTO> userDataList = userMapper.selectUserReportByDateRange(
                 begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
 
+        // 将用户数据按日期存入 Map 中
+        Map<LocalDate, UserReportDataDTO> userMap = userDataList.stream()
+                .collect(Collectors.toMap(
+                        UserReportDataDTO::getDate,
+                        data -> data,
+                        (existing, replacement) -> existing) // 如果日期重复，保留已有值
+                );
+
         StringBuilder dateListStr = new StringBuilder();
         StringBuilder newUserListStr = new StringBuilder();
         StringBuilder totalUserListStr = new StringBuilder();
@@ -94,18 +107,10 @@ public class ReportServiceImpl implements ReportService {
             }
             dateListStr.append(date);
 
-            // 获取对应的新增用户数和总用户数
-            Long newUserCount = userDataList.stream()
-                    .filter(data -> data.getDate().equals(date))
-                    .map(UserReportDataDTO::getNewUserCount)
-                    .findFirst()
-                    .orElse(0L);
-
-            Long totalUserCount = userDataList.stream()
-                    .filter(data -> data.getDate().equals(date))
-                    .map(UserReportDataDTO::getTotalUserCount)
-                    .findFirst()
-                    .orElse(0L);
+            // 获取新增用户数和总用户数
+            UserReportDataDTO userData = userMap.get(date);
+            long newUserCount = (userData != null) ? userData.getNewUserCount() : 0L;
+            long totalUserCount = (userData != null) ? userData.getTotalUserCount() : 0L;
 
             newUserListStr.append(newUserCount);
             totalUserListStr.append(totalUserCount);
@@ -131,6 +136,14 @@ public class ReportServiceImpl implements ReportService {
         List<OrderReportDataDTO> orderReportDateList = orderMapper.selectOrderReportByDateRange(
                 begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
 
+        // 将订单数据按日期存入 Map 中
+        Map<LocalDate, OrderReportDataDTO> orderMap = orderReportDateList.stream()
+                .collect(Collectors.toMap(
+                        OrderReportDataDTO::getDate,
+                        data -> data,
+                        (existing, replacement) -> existing) // 如果日期重复，保留已有值
+                );
+
         StringBuilder orderCountListStr = new StringBuilder();
         StringBuilder validOrderCountListStr = new StringBuilder();
 
@@ -147,11 +160,7 @@ public class ReportServiceImpl implements ReportService {
             validOrderCountListStr.append(0); // 默认有效订单数为 0
 
             // 获取订单统计数据
-            OrderReportDataDTO data = orderReportDateList.stream()
-                    .filter(order -> order.getDate().equals(date))
-                    .findFirst()
-                    .orElse(null);
-
+            OrderReportDataDTO data = orderMap.get(date);
             if (data != null) {
                 orderCompletionRate = data.getOrderCompletionRate();
                 orderTotalCount = data.getOrderTotalCount();
@@ -162,7 +171,7 @@ public class ReportServiceImpl implements ReportService {
         }
 
         return OrderReportVO.builder()
-                .dateList(String.join(",", allDates.stream().map(LocalDate::toString).collect(Collectors.toList())))
+                .dateList(allDates.stream().map(LocalDate::toString).collect(Collectors.joining(",")))
                 .orderCompletionRate(orderCompletionRate)
                 .totalOrderCount(orderTotalCount)
                 .orderCountList(orderCountListStr.toString())
@@ -183,6 +192,7 @@ public class ReportServiceImpl implements ReportService {
         List<SalesTop10ReportDataDTO> salesTop10ReportDateList = orderDetailMapper.selectSalesTop10ReportByDateRange(
                 begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
 
+        // 使用 Map 存储销售数据
         StringBuilder nameListStr = new StringBuilder();
         StringBuilder numberListStr = new StringBuilder();
 
