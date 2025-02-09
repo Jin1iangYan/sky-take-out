@@ -101,4 +101,11 @@ public interface OrderService {
      *
      * @param id
      */
-    void complete(Long id);}
+    void complete(Long id);
+
+    /**
+     * 客户催单
+     * @param id 订单id
+     */
+    void reminder(Long id);
+}
