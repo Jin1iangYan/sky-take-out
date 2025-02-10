@@ -60,7 +60,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             OrderReportDataDTO todayOrderReportDataDTO = orderReportDataDTOList.get(0);
 
             validOrderCount = todayOrderReportDataDTO.getValidOrderCount();
-            validOrderRate = (double) validOrderCount / todayOrderReportDataDTO.getOrderCount();
+            validOrderRate = validOrderCount != 0 ? (double) validOrderCount / todayOrderReportDataDTO.getOrderCount() : 0.0;
         }
 
         // 获取营业额

@@ -166,7 +166,7 @@ public class ReportServiceImpl implements ReportService {
 
         int orderTotalCount = orderReportDateList.stream().mapToInt(OrderReportDataDTO::getOrderCount).sum();
         int validOrderTotalCount = orderReportDateList.stream().mapToInt(OrderReportDataDTO::getValidOrderCount).sum();
-        double orderCompletionRate = (double) validOrderTotalCount / orderTotalCount;
+        double orderCompletionRate = validOrderTotalCount != 0 ? (double) validOrderTotalCount / orderTotalCount : 0.0;
 
         for (LocalDate date : allDates) {
             if (orderCountListStr.length() > 0) {
