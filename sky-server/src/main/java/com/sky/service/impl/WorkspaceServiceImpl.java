@@ -38,16 +38,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     /**
-     * 获取今日运营数据
+     * 获取日期范围内的运营数据
      *
-     * @return 今日运营数据
+     * @return 日期范围内的运营数据
      */
     @Override
-    public BusinessDataVO getBusinessData() {
-        // 一天的开始于结束
-        LocalDate today = LocalDate.now();
-        LocalDateTime begin = today.atStartOfDay();
-        LocalDateTime end = begin.plusDays(1).minusSeconds(1);
+    public BusinessDataVO getBusinessData(LocalDateTime begin, LocalDateTime end) {
 
         // 获取新增用户数
         int newUser = 0;
