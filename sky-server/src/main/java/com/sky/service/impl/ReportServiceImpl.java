@@ -100,7 +100,7 @@ public class ReportServiceImpl implements ReportService {
         StringBuilder totalUserListStr = new StringBuilder();
 
         // 获取用户总数（截至统计开始日期）
-        Long totalUserCount = userMapper.getUserCountBeforeDate(end.plusDays(1).atStartOfDay());
+        Long totalUserCount = userMapper.getUserCountBeforeDate(begin.atStartOfDay());
         assert totalUserCount != null;
 
         for (LocalDate date : allDates) {
