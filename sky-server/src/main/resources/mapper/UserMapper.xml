@@ -11,11 +11,13 @@
     <select id="selectUserReportByDateRange" resultType="com.sky.dto.UserReportDataDTO">
         SELECT
         DATE(create_time) AS date,
-        COALESCE(COUNT(DISTINCT CASE WHEN create_time >= #{begin} AND create_time &lt;= #{end} THEN id END), 0)AS newUserCount,
-        (SELECT COALESCE(COUNT(DISTINCT id), 0) FROM user) AS totalUserCount
-
+        COUNT(id) AS newUserCount
         FROM user
         WHERE create_time BETWEEN #{begin} AND #{end}
         GROUP BY DATE(create_time);
+    </select>
+
+    <select id="getUserCountBeforeDate" resultType="java.lang.Long">
+        SELECT COUNT(id) FROM user WHERE create_time &lt; #{begin};
     </select>
 </mapper>

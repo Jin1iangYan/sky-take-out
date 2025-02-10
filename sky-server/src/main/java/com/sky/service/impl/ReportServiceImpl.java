@@ -99,6 +99,10 @@ public class ReportServiceImpl implements ReportService {
         StringBuilder newUserListStr = new StringBuilder();
         StringBuilder totalUserListStr = new StringBuilder();
 
+        // 获取用户总数（截至统计开始日期）
+        Long totalUserCount = userMapper.getUserCountBeforeDate(end.plusDays(1).atStartOfDay());
+        assert totalUserCount != null;
+
         for (LocalDate date : allDates) {
             if (dateListStr.length() > 0) {
                 dateListStr.append(",");
@@ -107,10 +111,13 @@ public class ReportServiceImpl implements ReportService {
             }
             dateListStr.append(date);
 
-            // 获取新增用户数和总用户数
+            // 获取新增用户数
             UserReportDataDTO userData = userMap.get(date);
             long newUserCount = (userData != null) ? userData.getNewUserCount() : 0L;
-            long totalUserCount = (userData != null) ? userData.getTotalUserCount() : 0L;
+            // 同步用户总数
+            if (newUserCount > 0) {
+                totalUserCount += newUserCount;
+            }
 
             newUserListStr.append(newUserCount);
             totalUserListStr.append(totalUserCount);
@@ -147,28 +154,29 @@ public class ReportServiceImpl implements ReportService {
         StringBuilder orderCountListStr = new StringBuilder();
         StringBuilder validOrderCountListStr = new StringBuilder();
 
-        Double orderCompletionRate = 0.0;
-        Integer orderTotalCount = 0;
-        Integer validOrderTotalCount = 0;
+        int orderTotalCount = orderReportDateList.stream().mapToInt(OrderReportDataDTO::getOrderCount).sum();
+        int validOrderTotalCount = orderReportDateList.stream().mapToInt(OrderReportDataDTO::getValidOrderCount).sum();
+        double orderCompletionRate = (double) validOrderTotalCount / orderTotalCount;
 
         for (LocalDate date : allDates) {
             if (orderCountListStr.length() > 0) {
                 orderCountListStr.append(",");
                 validOrderCountListStr.append(",");
             }
-            orderCountListStr.append(0); // 默认订单数为 0
-            validOrderCountListStr.append(0); // 默认有效订单数为 0
-
             // 获取订单统计数据
             OrderReportDataDTO data = orderMap.get(date);
             if (data != null) {
-                orderCompletionRate = data.getOrderCompletionRate();
-                orderTotalCount = data.getOrderTotalCount();
-                validOrderTotalCount = data.getValidOrderTotalCount();
+                // 如果有数据，添加实际订单数量
                 orderCountListStr.append(data.getOrderCount());
                 validOrderCountListStr.append(data.getValidOrderCount());
+            } else {
+                // 如果没有数据，添加默认值 0
+                orderCountListStr.append(0);
+                validOrderCountListStr.append(0);
             }
         }
+
+
 
         return OrderReportVO.builder()
                 .dateList(allDates.stream().map(LocalDate::toString).collect(Collectors.joining(",")))

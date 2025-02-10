@@ -29,4 +29,6 @@ public interface UserMapper {
     void insert(User user);
 
     List<UserReportDataDTO> selectUserReportByDateRange(LocalDateTime begin, LocalDateTime end);
+
+    Long getUserCountBeforeDate(LocalDateTime begin);
 }

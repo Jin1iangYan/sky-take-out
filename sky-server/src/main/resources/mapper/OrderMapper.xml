@@ -121,26 +121,12 @@
     </select>
 
     <select id="selectOrderReportByDateRange" resultType="com.sky.dto.OrderReportDataDTO">
-        WITH OrderStats AS (
-            SELECT
-                DATE(order_time) AS date,
-                COUNT(DISTINCT CASE WHEN status = 5 THEN id END) AS validOrderCount,
-                COUNT(DISTINCT id) AS orderCount
-            FROM orders
-            WHERE order_time BETWEEN #{begin} AND #{end}
-            GROUP BY DATE(order_time)
-        )
         SELECT
-            o.date,
-            o.validOrderCount,
-            o.orderCount,
-            (SELECT COALESCE(SUM(validOrderCount), 0) FROM OrderStats) AS validOrderTotalCount,
-            (SELECT COALESCE(SUM(orderCount), 0) FROM OrderStats) AS orderTotalCount,
-            -- 计算订单完成率
-            CASE
-                WHEN o.orderCount = 0 THEN 0
-                ELSE o.validOrderCount / o.orderCount
-                END AS orderCompletionRate
-        FROM OrderStats o;
+            DATE(order_time) AS date,
+            COUNT(CASE WHEN status = 5 THEN id END) AS validOrderCount,
+            COUNT(id) AS orderCount
+        FROM orders
+        WHERE order_time BETWEEN #{begin} AND #{end}
+        GROUP BY DATE(order_time)
     </select>
 </mapper>
