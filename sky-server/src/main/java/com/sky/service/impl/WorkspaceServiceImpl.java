@@ -3,10 +3,15 @@ package com.sky.service.impl;
 import com.sky.dto.OrderReportDataDTO;
 import com.sky.dto.TurnoverReportDataDTO;
 import com.sky.dto.UserReportDataDTO;
+import com.sky.mapper.DishMapper;
 import com.sky.mapper.OrderMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.WorkspaceService;
 import com.sky.vo.BusinessDataVO;
+import com.sky.vo.DishOverViewVO;
+import com.sky.vo.OrderOverViewVO;
+import com.sky.vo.SetmealOverViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +27,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final UserMapper userMapper;
     private final OrderMapper orderMapper;
+    private final SetmealMapper setmealMapper;
+    private final DishMapper dishMapper;
 
-    public WorkspaceServiceImpl(UserMapper userMapper, OrderMapper orderMapper) {
+    public WorkspaceServiceImpl(UserMapper userMapper, OrderMapper orderMapper, SetmealMapper setmealMapper, DishMapper dishMapper) {
         this.userMapper = userMapper;
         this.orderMapper = orderMapper;
+        this.setmealMapper = setmealMapper;
+        this.dishMapper = dishMapper;
     }
 
     /**
@@ -79,5 +88,35 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .unitPrice(unitPrice)
                 .newUsers(newUser)
                 .build();
+    }
+
+    /**
+     * 查询套餐总览
+     *
+     * @return 套餐总览
+     */
+    @Override
+    public SetmealOverViewVO getSetmealOverView() {
+        return setmealMapper.getSetmealOverView();
+    }
+
+    /**
+     * 查询菜品总览
+     *
+     * @return 菜品总览
+     */
+    @Override
+    public DishOverViewVO getDishOverView() {
+        return dishMapper.getDishOverView();
+    }
+
+    /**
+     * 查询订单管理数据
+     *
+     * @return 订单管理数据
+     */
+    @Override
+    public OrderOverViewVO getOrderOverView() {
+        return orderMapper.getOrderOverView();
     }
 }

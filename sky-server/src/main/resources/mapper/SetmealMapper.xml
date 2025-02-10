@@ -47,6 +47,7 @@
     <select id="findById" resultType="com.sky.entity.Setmeal">
         select * from setmeal where id = #{id}
     </select>
+
     <select id="list" parameterType="Setmeal" resultType="Setmeal">
         select * from setmeal
         <where>
@@ -60,4 +61,12 @@
                 and status = #{status}
             </if>
         </where>
-    </select></mapper>
+    </select>
+
+    <select id="getSetmealOverView" resultType="com.sky.vo.SetmealOverViewVO">
+        SELECT
+            COUNT(CASE WHEN status = 0 THEN id END) AS discontinued,
+            COUNT(CASE WHEN status = 1 THEN id END) AS sold
+        FROM setmeal
+    </select>
+</mapper>

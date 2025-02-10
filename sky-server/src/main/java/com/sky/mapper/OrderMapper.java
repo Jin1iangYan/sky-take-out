@@ -5,6 +5,7 @@ import com.sky.dto.OrderReportDataDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.TurnoverReportDataDTO;
 import com.sky.entity.Orders;
+import com.sky.vo.OrderOverViewVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -39,4 +40,10 @@ public interface OrderMapper {
     List<TurnoverReportDataDTO> selectTurnoverByDateRange(LocalDateTime begin, LocalDateTime end);
 
     List<OrderReportDataDTO> selectOrderReportByDateRange(LocalDateTime begin, LocalDateTime end);
+
+    /**
+     * 查询订单管理数据
+     * @return 订单管理数据
+     */
+    OrderOverViewVO getOrderOverView();
 }

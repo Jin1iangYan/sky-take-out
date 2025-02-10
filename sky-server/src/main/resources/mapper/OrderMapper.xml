@@ -129,4 +129,15 @@
         WHERE order_time BETWEEN #{begin} AND #{end}
         GROUP BY DATE(order_time)
     </select>
+
+    <select id="getOrderOverView" resultType="com.sky.vo.OrderOverViewVO">
+        SELECT
+            COUNT(CASE WHEN status = 2 THEN id END) AS waitingOrders,
+            COUNT(CASE WHEN status = 3 THEN id END) AS deliveredOrders,
+            COUNT(CASE WHEN status = 5 THEN id END) AS completedOrders,
+            -- 取消和退款状态都计为已取消订单
+            COUNT(CASE WHEN status = 6 OR status = 7 THEN id END) AS cancelledOrders,
+            COUNT(id) AS allOrders
+        FROM orders
+    </select>
 </mapper>

@@ -91,4 +91,11 @@
         </where>
         order by create_time desc
     </select>
+
+    <select id="getDishOverView" resultType="com.sky.vo.DishOverViewVO">
+        SELECT
+            COUNT(CASE WHEN status = 0 THEN id END) AS discontinued,
+            COUNT(CASE WHEN status = 1 THEN id END) AS sold
+        FROM dish
+    </select>
 </mapper>
