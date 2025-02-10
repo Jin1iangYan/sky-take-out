@@ -56,7 +56,7 @@
             SUM(od.number) AS saleNumber
         FROM order_detail od
             LEFT JOIN orders o ON od.order_id = o.id
-        WHERE o.order_time BETWEEN #{begin} AND #{end}
+        WHERE o.order_time BETWEEN #{begin} AND #{end} AND o.status = 5
         GROUP BY od.dish_id, od.name
         ORDER BY saleNumber DESC
         LIMIT 10
