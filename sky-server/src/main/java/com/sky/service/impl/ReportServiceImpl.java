@@ -42,7 +42,7 @@ public class ReportServiceImpl implements ReportService {
     public TurnoverReportVO getTurnoverReport(LocalDate begin, LocalDate end) {
         List<LocalDate> allDates = begin.datesUntil(end.plusDays(1)).collect(Collectors.toList());
         List<TurnoverReportDataDTO> turnoverDataList = orderMapper.selectTurnoverByDateRange(
-                begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
+                begin.atStartOfDay(), end.plusDays(1).atStartOfDay().minusSeconds(1));
 
         // 将销售数据按日期存入 Map 中
         Map<LocalDate, BigDecimal> turnoverMap = turnoverDataList.stream()
@@ -85,7 +85,7 @@ public class ReportServiceImpl implements ReportService {
     public UserReportVO getUserStatistics(LocalDate begin, LocalDate end) {
         List<LocalDate> allDates = begin.datesUntil(end.plusDays(1)).collect(Collectors.toList());
         List<UserReportDataDTO> userDataList = userMapper.selectUserReportByDateRange(
-                begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
+                begin.atStartOfDay(), end.plusDays(1).atStartOfDay().minusSeconds(1));
 
         // 将用户数据按日期存入 Map 中
         Map<LocalDate, UserReportDataDTO> userMap = userDataList.stream()
@@ -141,7 +141,7 @@ public class ReportServiceImpl implements ReportService {
     public OrderReportVO getOrderStatistics(LocalDate begin, LocalDate end) {
         List<LocalDate> allDates = begin.datesUntil(end.plusDays(1)).collect(Collectors.toList());
         List<OrderReportDataDTO> orderReportDateList = orderMapper.selectOrderReportByDateRange(
-                begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
+                begin.atStartOfDay(), end.plusDays(1).atStartOfDay().minusSeconds(1));
 
         // 将订单数据按日期存入 Map 中
         Map<LocalDate, OrderReportDataDTO> orderMap = orderReportDateList.stream()
@@ -198,7 +198,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public SalesTop10ReportVO getSalesTop10(LocalDate begin, LocalDate end) {
         List<SalesTop10ReportDataDTO> salesTop10ReportDateList = orderDetailMapper.selectSalesTop10ReportByDateRange(
-                begin.atStartOfDay(), end.plusDays(1).atStartOfDay());
+                begin.atStartOfDay(), end.plusDays(1).atStartOfDay().minusSeconds(1));
 
         // 使用 Map 存储销售数据
         StringBuilder nameListStr = new StringBuilder();
